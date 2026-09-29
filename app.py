@@ -1,6 +1,6 @@
 """
 Strava / Bellabeat Fitness Analytics — Interactive Case Study Dashboard
-Author: P Suman Sangeet (Data Science & AI Intern)
+Author: Riya Gupta (Data Analytics & AI Intern)
 
 A recruiter-facing, interactive Streamlit deployment of a smart-device fitness
 analytics case study (FitBit Fitabase tracking data, 33 users, 04/12/2016-05/12/2016).
@@ -48,35 +48,301 @@ DOW_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
 SEG_ORDER = ["Sedentary Users", "Moderately Active Users", "Highly Active Users"]
 SEG_COLORS = {"Sedentary Users": "#C7D3DD", "Moderately Active Users": "#2E86AB", "Highly Active Users": "#F26419"}
 
+
 CUSTOM_CSS = f"""
 <style>
-:root {{ --cyan:#00E5FF; --orange:#FF6B35; --pink:#FF3CAC; --green:#39FF88; }}
-.stApp {{ background: radial-gradient(circle at 8% 8%,rgba(0,229,255,.10),transparent 28%), radial-gradient(circle at 92% 12%,rgba(255,60,172,.09),transparent 25%), linear-gradient(135deg,#050B14 0%,#07111F 50%,#0A1524 100%); color:#F4F8FF; }}
-.main {{ background:transparent; }}
-#MainMenu,footer {{ visibility:hidden; }}
-.stApp::before {{ content:""; position:fixed; inset:0; pointer-events:none; opacity:.11; background-image:linear-gradient(rgba(0,229,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.06) 1px,transparent 1px); background-size:42px 42px; mask-image:linear-gradient(to bottom,black,transparent 88%); }}
-.hero {{ position:relative; overflow:hidden; padding:2.35rem 2.5rem; border-radius:24px; background:radial-gradient(circle at 85% 20%,rgba(0,229,255,.30),transparent 25%),radial-gradient(circle at 15% 80%,rgba(255,60,172,.18),transparent 30%),linear-gradient(120deg,#0B1D31,#102C45 48%,#071827); border:1px solid rgba(0,229,255,.24); box-shadow:0 18px 55px rgba(0,0,0,.42),0 0 34px rgba(0,229,255,.08); color:white; margin-bottom:1.6rem; }}
-.hero h1 {{ margin:0 0 .4rem; font-size:2.25rem; font-weight:850; letter-spacing:-.035em; text-shadow:0 0 22px rgba(0,229,255,.20); }}
-.hero p {{ margin:0; font-size:1.02rem; color:#D9E8F7; line-height:1.55; }}
-.hero .tagline {{ display:inline-block; margin-top:1rem; padding:.38rem .9rem; background:rgba(0,229,255,.10); border:1px solid rgba(0,229,255,.28); color:#BDF7FF; border-radius:999px; font-size:.82rem; font-weight:700; }}
-.kpi-card {{ background:linear-gradient(145deg,rgba(18,35,56,.88),rgba(8,20,34,.78)); backdrop-filter:blur(14px); border-radius:18px; padding:1.15rem 1.25rem; border:1px solid rgba(159,176,197,.14); border-left:4px solid var(--cyan); height:100%; box-shadow:0 12px 30px rgba(0,0,0,.24),0 0 22px rgba(0,229,255,.05); transition:.18s ease; }}
-.kpi-card:hover {{ transform:translateY(-3px); border-color:rgba(0,229,255,.38); box-shadow:0 16px 36px rgba(0,0,0,.32),0 0 26px rgba(0,229,255,.10); }}
-.kpi-card .label {{ font-size:.72rem; color:#8EA5BC; text-transform:uppercase; letter-spacing:.10em; font-weight:750; }}
-.kpi-card .value {{ font-size:1.72rem; font-weight:850; color:#F5FBFF; margin-top:.18rem; text-shadow:0 0 15px rgba(0,229,255,.10); }}
-.kpi-card .sub {{ font-size:.78rem; color:#91A6BB; margin-top:.25rem; }}
-.insight-box {{ background:linear-gradient(135deg,rgba(16,35,56,.86),rgba(8,20,34,.78)); backdrop-filter:blur(12px); border-radius:16px; padding:1.05rem 1.25rem; margin-bottom:.8rem; border:1px solid rgba(255,107,53,.16); border-left:4px solid var(--orange); box-shadow:0 10px 28px rgba(0,0,0,.20); color:#DCE8F4; }}
-.insight-box b {{ color:#FFF; }}
-.persona-card {{ background:linear-gradient(145deg,rgba(17,34,54,.92),rgba(7,17,29,.86)); backdrop-filter:blur(14px); border-radius:18px; padding:1.3rem 1.4rem; box-shadow:0 14px 32px rgba(0,0,0,.25); height:100%; border:1px solid rgba(159,176,197,.13); border-top:5px solid var(--accent); color:#DCE8F4; }}
-.persona-card h3 {{ margin-top:0; color:#FFF; }}
-.badge {{ display:inline-block; padding:.18rem .62rem; border-radius:999px; background:rgba(0,229,255,.08); border:1px solid rgba(0,229,255,.16); color:#BDF7FF; font-size:.72rem; font-weight:700; margin-right:.3rem; }}
-section[data-testid="stSidebar"] {{ background:radial-gradient(circle at 50% 0%,rgba(0,229,255,.10),transparent 32%),linear-gradient(180deg,#06111E,#081625); border-right:1px solid rgba(0,229,255,.12); box-shadow:12px 0 40px rgba(0,0,0,.22); }}
-section[data-testid="stSidebar"] * {{ color:#E7F2FC !important; }}
-.stButton > button {{ border:1px solid rgba(0,229,255,.28); background:linear-gradient(135deg,rgba(0,229,255,.13),rgba(46,134,171,.18)); color:#E9FBFF; border-radius:12px; box-shadow:0 0 18px rgba(0,229,255,.06); }}
-.stButton > button:hover {{ border-color:rgba(0,229,255,.60); box-shadow:0 0 22px rgba(0,229,255,.16); }}
-.stTabs [data-baseweb="tab-list"] {{ gap:.4rem; background:rgba(7,18,31,.55); padding:.35rem; border-radius:14px; border:1px solid rgba(0,229,255,.10); }}
-.stTabs [data-baseweb="tab"] {{ border-radius:10px; color:#9FB0C5; }}
-.stTabs [aria-selected="true"] {{ background:rgba(0,229,255,.10); color:#BDF7FF; }}
-h1,h2,h3,h4 {{ color:#F5FAFF !important; letter-spacing:-.02em; }}
+:root {{
+    --primary: #8B5CF6;
+    --secondary: #C084FC;
+    --pink: #F472B6;
+    --green: #34D399;
+    --gold: #FBBF24;
+    --bg: #090817;
+    --surface: #151329;
+    --text: #F5F3FF;
+    --muted: #A5A0C0;
+}}
+
+.stApp {{
+    background:
+        radial-gradient(circle at 8% 8%, rgba(139,92,246,.16), transparent 30%),
+        radial-gradient(circle at 92% 12%, rgba(244,114,182,.10), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(52,211,153,.06), transparent 35%),
+        linear-gradient(135deg, #090817 0%, #100D24 50%, #17112C 100%);
+    color: var(--text);
+}}
+
+.main {{
+    background: transparent;
+}}
+
+#MainMenu, footer {{
+    visibility: hidden;
+}}
+
+.stApp::before {{
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .09;
+    background-image:
+        linear-gradient(rgba(192,132,252,.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(192,132,252,.10) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: linear-gradient(to bottom, black, transparent 88%);
+}}
+
+/* HERO SECTION */
+
+.hero {{
+    position: relative;
+    overflow: hidden;
+    padding: 2.5rem 2.6rem;
+    border-radius: 26px;
+    background:
+        radial-gradient(circle at 85% 15%, rgba(139,92,246,.32), transparent 30%),
+        radial-gradient(circle at 12% 90%, rgba(244,114,182,.18), transparent 32%),
+        linear-gradient(120deg, #1B1538, #241747 48%, #100D24);
+    border: 1px solid rgba(192,132,252,.28);
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.42),
+        0 0 38px rgba(139,92,246,.10);
+    color: white;
+    margin-bottom: 1.7rem;
+}}
+
+.hero h1 {{
+    margin: 0 0 .5rem;
+    font-size: 2.3rem;
+    font-weight: 850;
+    letter-spacing: -.04em;
+    text-shadow: 0 0 24px rgba(192,132,252,.28);
+}}
+
+.hero p {{
+    margin: 0;
+    font-size: 1.02rem;
+    color: #E2DDF5;
+    line-height: 1.65;
+}}
+
+.hero .tagline {{
+    display: inline-block;
+    margin-top: 1.1rem;
+    padding: .42rem 1rem;
+    background: rgba(139,92,246,.16);
+    border: 1px solid rgba(192,132,252,.36);
+    color: #E9D5FF;
+    border-radius: 999px;
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+}}
+
+/* KPI CARDS */
+
+.kpi-card {{
+    background: linear-gradient(145deg, rgba(30,25,57,.92), rgba(17,14,35,.90));
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 1.25rem 1.35rem;
+    border: 1px solid rgba(192,132,252,.16);
+    border-left: 4px solid var(--primary);
+    height: 100%;
+    box-shadow:
+        0 14px 34px rgba(0,0,0,.28),
+        0 0 22px rgba(139,92,246,.06);
+    transition: all .25s ease;
+}}
+
+.kpi-card:hover {{
+    transform: translateY(-5px);
+    border-color: rgba(192,132,252,.48);
+    box-shadow:
+        0 20px 42px rgba(0,0,0,.36),
+        0 0 28px rgba(139,92,246,.16);
+}}
+
+.kpi-card .label {{
+    font-size: .72rem;
+    color: #AAA2C9;
+    text-transform: uppercase;
+    letter-spacing: .11em;
+    font-weight: 750;
+}}
+
+.kpi-card .value {{
+    font-size: 1.8rem;
+    font-weight: 850;
+    color: #F8F5FF;
+    margin-top: .22rem;
+    text-shadow: 0 0 18px rgba(192,132,252,.15);
+}}
+
+.kpi-card .sub {{
+    font-size: .78rem;
+    color: #AAA2C9;
+    margin-top: .3rem;
+}}
+
+/* INSIGHT BOX */
+
+.insight-box {{
+    background: linear-gradient(135deg, rgba(34,27,59,.92), rgba(19,15,38,.90));
+    backdrop-filter: blur(14px);
+    border-radius: 18px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: .9rem;
+    border: 1px solid rgba(251,191,36,.18);
+    border-left: 4px solid var(--gold);
+    box-shadow: 0 12px 30px rgba(0,0,0,.24);
+    color: #E8E3F5;
+    line-height: 1.65;
+}}
+
+.insight-box b {{
+    color: #FFFFFF;
+}}
+
+/* PERSONA CARDS */
+
+.persona-card {{
+    background: linear-gradient(145deg, rgba(31,26,56,.95), rgba(15,13,32,.92));
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 1.4rem 1.5rem;
+    box-shadow: 0 16px 36px rgba(0,0,0,.28);
+    height: 100%;
+    border: 1px solid rgba(192,132,252,.16);
+    border-top: 5px solid var(--accent);
+    color: #E8E3F5;
+    transition: all .25s ease;
+}}
+
+.persona-card:hover {{
+    transform: translateY(-4px);
+    box-shadow: 0 20px 42px rgba(0,0,0,.36);
+    border-color: rgba(192,132,252,.36);
+}}
+
+.persona-card h3 {{
+    margin-top: 0;
+    color: #FFFFFF;
+}}
+
+/* BADGES */
+
+.badge {{
+    display: inline-block;
+    padding: .22rem .68rem;
+    border-radius: 999px;
+    background: rgba(139,92,246,.14);
+    border: 1px solid rgba(192,132,252,.28);
+    color: #E9D5FF;
+    font-size: .72rem;
+    font-weight: 700;
+    margin-right: .3rem;
+}}
+
+/* SIDEBAR */
+
+section[data-testid="stSidebar"] {{
+    background:
+        radial-gradient(circle at 50% 0%, rgba(139,92,246,.15), transparent 34%),
+        linear-gradient(180deg, #100D24, #0B091A);
+    border-right: 1px solid rgba(192,132,252,.16);
+    box-shadow: 12px 0 42px rgba(0,0,0,.25);
+}}
+
+section[data-testid="stSidebar"] * {{
+    color: #EDE9FE !important;
+}}
+
+/* BUTTONS */
+
+.stButton > button {{
+    border: 1px solid rgba(192,132,252,.36);
+    background: linear-gradient(135deg, rgba(139,92,246,.24), rgba(109,40,217,.20));
+    color: #F5F3FF;
+    border-radius: 13px;
+    font-weight: 650;
+    box-shadow: 0 0 20px rgba(139,92,246,.08);
+    transition: all .22s ease;
+}}
+
+.stButton > button:hover {{
+    border-color: rgba(192,132,252,.72);
+    background: linear-gradient(135deg, rgba(139,92,246,.38), rgba(109,40,217,.32));
+    box-shadow: 0 0 26px rgba(139,92,246,.20);
+    transform: translateY(-2px);
+}}
+
+/* TABS */
+
+.stTabs [data-baseweb="tab-list"] {{
+    gap: .45rem;
+    background: rgba(17,13,35,.72);
+    padding: .4rem;
+    border-radius: 15px;
+    border: 1px solid rgba(192,132,252,.14);
+}}
+
+.stTabs [data-baseweb="tab"] {{
+    border-radius: 11px;
+    color: #AAA2C9;
+    transition: all .2s ease;
+}}
+
+.stTabs [aria-selected="true"] {{
+    background: rgba(139,92,246,.20);
+    color: #E9D5FF;
+}}
+
+/* HEADINGS */
+
+h1, h2, h3, h4 {{
+    color: #F5F3FF !important;
+    letter-spacing: -.025em;
+}}
+
+/* INPUTS */
+
+.stTextInput input,
+.stNumberInput input,
+.stSelectbox div[data-baseweb="select"],
+.stMultiSelect div[data-baseweb="select"] {{
+    background-color: #17132D;
+    color: #F5F3FF;
+    border-color: rgba(192,132,252,.25);
+    border-radius: 10px;
+}}
+
+/* DIVIDERS */
+
+hr {{
+    border-color: rgba(192,132,252,.16);
+}}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {{
+    width: 8px;
+}}
+
+::-webkit-scrollbar-track {{
+    background: #100D24;
+}}
+
+::-webkit-scrollbar-thumb {{
+    background: #6D4BC3;
+    border-radius: 10px;
+}}
+
+::-webkit-scrollbar-thumb:hover {{
+    background: #A78BFA;
+}}
+
 </style>
 """
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
@@ -285,7 +551,7 @@ if page == "🏠 Overview":
                 insights for <b>Bellabeat</b>, a wellness-technology company for women — covering data
                 cleaning, SQL-style aggregation, exploratory analysis, unsupervised ML segmentation,
                 and this interactive Streamlit deployment layer.</p>
-                <span class="tagline">📌 Prepared by P Suman Sangeet · LABMENTIX Data Analytics &amp; AI Intern</span>
+                <span class="tagline">📌 Prepared by Riya Gupta · LABMENTIX Data Analytics &amp; AI Intern</span>
             </div>""",
         unsafe_allow_html=True,
     )
@@ -980,8 +1246,8 @@ elif page == "💡 Business Recommendations":
 elif page == "👤 About the Analyst":
     st.markdown(
         f"""<div class="hero">
-                <h1>👤 P Suman Sangeet</h1>
-                <p>Data Science &amp; AI Intern — turning raw device data into decisions.</p>
+                <h1>👤 Riya Gupta</h1>
+                <p>Data Analyst &amp; AI Intern — turning raw device data into decisions.</p>
                 <span class="tagline">Open to Data Analyst / Data Science opportunities</span>
             </div>""",
         unsafe_allow_html=True,
@@ -1014,9 +1280,9 @@ elif page == "👤 About the Analyst":
         st.subheader("Contact")
         st.markdown(
             "✏️ *Update these with your real links before sharing this dashboard:*\n\n"
-            "- 📧 Email: `sumansangeet789@gmail.com`\n"
-            "- 💼 LinkedIn: `linkedin.com/in/p-suman-sangeet`\n"
-            "- 💻 GitHub: `github.com/SUMANSANGEET`\n"
+            "- 📧 Email: ``\n"
+            "- 💼 LinkedIn: ``\n"
+            "- 💻 GitHub: `github.com/Riyagupta321`\n"
             "- 📄 Resume: link to a hosted PDF"
         )
     with col2:

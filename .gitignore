@@ -1,34 +1,29 @@
-# Python
+
+# Python cache
 __pycache__/
 *.py[cod]
-*.pyo
+*$py.class
 
 # Virtual environments
 venv/
-env/
 .venv/
+env/
 ENV/
 
-# Jupyter
+# Jupyter checkpoints
 .ipynb_checkpoints/
 
-# Python environments
-.python-version
-
-# Secrets
+# Environment variables and secrets
 .env
 .env.*
-*.pem
-*.key
+!.env.example
+secrets.toml
 
-# Streamlit
-.streamlit/secrets.toml
-
-# IDE
+# IDE settings
 .vscode/
 .idea/
 
-# OS
+# Operating system files
 .DS_Store
 Thumbs.db
 desktop.ini
@@ -38,26 +33,17 @@ desktop.ini
 
 # Temporary files
 *.tmp
-*.temp
+*.bak
 
-# Model artifacts
-*.joblib
-*.pkl
+# Python packaging
+build/
+dist/
+*.egg-info/
 
-# Large databases
-*.db
-*.sqlite
-*.sqlite3
-
-# Cache
-.cache/
+# Test and coverage files
 .pytest_cache/
+.coverage
+htmlcov/
 
-# Excel temporary files
-~$*.xlsx
-~$*.xls
-
-# Large compressed files
-*.zip
-*.rar
-*.7z
+# Streamlit secrets
+.streamlit/secrets.toml
